@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Uri Alias and Hebrew Date Service</title>
+    </head>
+    <body>
+        <h1>Uri Alias and Hebrew Date Service</h1>
+            <h2> External Uri: https://urialiasservice.azurewebsites.net/</h2>
+            <h2>Uri and Alias Service</h2>
+            <div>
+                <h3>Request</h3>
+                <div>
+                    <b>POST /createUri</b>
+                    <p>Values in a json format</p>
+                    <pre>
+                        <code>
+                            {
+                                "AKNType": String,Example: act
+                                "Type": String, Example: law,
+                                "emissionDate": String,Must to be as YYYY-MM-DD format, Example:"2021-07-11",
+                                "DocumentNumber": String, Example: "123456"
+                                "Language": String, Example:"heb",
+                                "ExpressionDate": String,
+                            }
+                        </code>
+                    </pre>
+                </div>
+                <h4>Return</h4>
+                <div>
+                    <p>Array with Uri at 0 index and Alias at 1 index</p>
+                    <pre>
+                        <code>
+                            [
+                                "/akn/il/act/law/2021-07-11/123456/heb@",
+                                "/akn/il/act/‏חוק‎/‏ב-אב-התשפא‎/123456/heb@"
+                            ]
+                        </code>
+                    </pre>
+                </div>
+            </div>
+            <h2>Date Service</h2>
+            <div>
+                <h2>Gregorian to Hebrew Date Service</h2>
+                <div>
+                    <div>
+                        <h3>Request</h3>
+                        <b>POST /gre2hebDate</b>
+                        <p>Values in a json format</p>
+                        <pre>
+                            <code>
+                                {
+                                    "year": "2021" ,
+                                    "month": "07",
+                                    "day": "11"
+                                }
+                            </code>
+                        </pre>
+                    </div>
+                    <div>
+                        <h4>Return</h4>
+                        <p>Hebrew Date as YYYY-MM-DD format</p>
+                        <pre>
+                            <code>
+                                    ‏ב-אב-התשפא‎
+                            </code>
+                        </pre>
+                    </div>
+                </div>
+                <div>
+                    <div>
+                        <h3>Request</h3>
+                        <b>GET /gre2hebDate/:date</b>
+                        <p>Get date YYYY-MM-DD Gregorian format in the uri param</p>
+                        <pre>
+                            <code>
+                                /gre2hebDate/:date
+                                :date => YYYY-MM-DD =>2021-07-11
+                                Example: /gre2hebDate/2021-07-11
+                            </code>
+                        </pre>
+                    </div>
+                    <div>
+                        <h4>Return</h4>
+                        <p>Hebrew Date as YYYY-MM-DD format</p>
+                        <pre>
+                            <code>
+                                    ‏ב-אב-התשפא‎
+                            </code>
+                        </pre>
+                    </div>
+                </div>
+            </div>
+                
+            <div>
+                <h2>Hebrew to Gregorian Date Service</h2>
+                <div>
+                    <div>
+                        <h3>Request</h3>
+                        <b>GET /heb2greDate/:hDate</b>
+                        <p>Get date YYYY-MM-DD Hebrew format in the uri param</p>
+                        <pre>
+                            <code>
+                                /gre2hebDate/:date
+                                :date => YYYY-MM-DD =>‏ב-אב-התשפא‎
+                                Example: /gre2hebDate/‏ב-אב-התשפא
+                            </code>
+                        </pre>
+                    </div>
+                    <div>
+                        <h4>Return</h4>
+                        <p>Gregorian Date as YYYY-MM-DD format</p>
+                        <pre>
+                            <code>
+                                    ‏2021-07-12
+                            </code>
+                        </pre>
+                    </div>
+                </div>
+            </div>
+    </body>
+</html>
