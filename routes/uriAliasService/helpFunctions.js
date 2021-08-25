@@ -11,35 +11,36 @@ const convertDates = require("../others/convertDates");
   /** ----------------------------------------------------------------------------------
    * get english form and return array with uri and alias
    *  ----------------------------------------------------------------------------------*/
-   function createEngUri(form) {
-    var uri = "/akn/il/";
-    var alias = "/akn/il/";
-    var dateParts = form.emissionDate.split("-");
-    var hDate = convertDates.G2H(dateParts[0],dateParts[1],dateParts[2]);
-    if (form.Language == undefined || form.Language == "" || form.Language.length < 3){
-      uri +=form.AKNType+"/"+form.Type+"/"+form.emissionDate+"/"+form.DocumentNumber
-      alias += form.AKNType+"/" +dictionary.getHebTranslation(form.Type)+"/"+hDate+"/"+form.DocumentNumber
-    }
-    else{
-      uri +=form.AKNType+"/"+form.Type+"/"+form.emissionDate+"/"+form.DocumentNumber+"/"+form.Language+"@"+form.ExpressionDate;
-      console.log("uri: ",uri);
-      console.log('ExpressionDate: ',form.ExpressionDate.length);
-      if (form.ExpressionDate != undefined && form.ExpressionDate.length != 0){
-        expressionDateParts = form.ExpressionDate.split("-");
-        heDate = convertDates.G2H(expressionDateParts[0],expressionDateParts[1],expressionDateParts[2]);
-        alias += form.AKNType+"/" +dictionary.getHebTranslation(form.Type)+"/"+hDate+"/"+form.DocumentNumber+"/"+form.Language+"@\u200E"+ heDate +"\u200F";
-      }
-      else{
-        alias += form.AKNType+"/" +dictionary.getHebTranslation(form.Type)+"/"+hDate+"/"+form.DocumentNumber+"/"+form.Language+"@";
-      }
-      console.log("alias: ",alias);
-    }
-    const uriObj = new Object();
-    uriObj['uri'] = uri;
-    uriObj['alias'] = alias;
-    uriObj['ifconfig'] = false;
-    uriObj['status'] = 200;
-    return uriObj;
+  function createEngUri(form) {
+    return new Promise((resolve, reject) => {
+      var uri = "/akn/il/";
+      var alias = "/akn/il/";
+      var dateParts = form.emissionDate.split("-");
+      var hDate = convertDates.G2H(dateParts[0],dateParts[1],dateParts[2]);
+      dictionary.getHebTranslation(form.Type).then((value) => {
+        if (form.Language == undefined || form.Language == "" || form.Language.length < 3){
+        uri +=form.AKNType+"/"+form.Type+"/"+form.emissionDate+"/"+form.DocumentNumber
+        alias += form.AKNType+"/" +value+"/"+hDate+"/"+form.DocumentNumber
+        }
+        else{
+          uri +=form.AKNType+"/"+form.Type+"/"+form.emissionDate+"/"+form.DocumentNumber+"/"+form.Language+"@"+form.ExpressionDate;
+          if (form.ExpressionDate != undefined && form.ExpressionDate.length != 0){
+            expressionDateParts = form.ExpressionDate.split("-");
+            heDate = convertDates.G2H(expressionDateParts[0],expressionDateParts[1],expressionDateParts[2]);
+            alias += form.AKNType+"/" +value+"/"+hDate+"/"+form.DocumentNumber+"/"+form.Language+"@\u200E"+ heDate +"\u200F";
+          }
+          else{
+            alias += form.AKNType+"/" +value+"/"+hDate+"/"+form.DocumentNumber+"/"+form.Language+"@";
+          }
+        }
+        const uriObj = new Object();
+        uriObj['uri'] = uri;
+        uriObj['alias'] = alias;
+        uriObj['ifconfig'] = false;
+        uriObj['status'] = 200;
+        resolve(uriObj);
+      });
+    });
   }
   /** ----------------------------------------------------------------------------------
    * Check if the uri data is correct 
@@ -68,43 +69,47 @@ const convertDates = require("../others/convertDates");
    * get english form and return array with uri and alias
    *  ----------------------------------------------------------------------------------*/
    function createHebUri(form) {
-  
-    var alias = "/akn/il/";
-    var uri = "/akn/il/";
-    var expressionDateParts,eeDate ; 
-    //Create Work
-    if (form.Language == undefined || form.Language == "" || form.Language.length < 3){
-      alias += form.AKNType+"/"+form.Type+"/"+form.emissionDate+"/"+form.DocumentNumber
-      uri += form.AKNType+"/" +dictionary.getEngTranslation(form.Type)+"/"+eDate+"/"+form.DocumentNumber
-    }
-    //Create Expression
-    else{
-      if (form.ExpressionDate != undefined || form.ExpressionDate != ""){
-        alias += form.AKNType+"/"+form.Type+"/"+form.emissionDate+"/"+form.DocumentNumber+"/"+form.Language+"@\u200E"+form.ExpressionDate +"\u200F";
-        expressionDateParts = form.ExpressionDate.split("-");
-        eeDate = convertDates.HStr2G(expressionDateParts[2],expressionDateParts[1],expressionDateParts[0]);
+    return new Promise((resolve, reject) => {
+      var alias = "/akn/il/";
+      var uri = "/akn/il/";
+      var emissionDateDateParts = form.emissionDate.split("-"); ; 
+      var eDate = convertDates.HStr2G(emissionDateDateParts[2],emissionDateDateParts[1],emissionDateDateParts[0]);
+      dictionary.getEngTranslation(form.Type).then((value) => {
+        if (form.Language == undefined || form.Language == "" || form.Language.length < 3){
+          alias += form.AKNType+"/"+form.Type+"/"+form.emissionDate+"/"+form.DocumentNumber
+          uri += form.AKNType+"/" +value+"/"+eDate+"/"+form.DocumentNumber
+        }
+        //Create Expression
+        else{
+          if (form.ExpressionDate != undefined || form.ExpressionDate != ""){
+            alias += form.AKNType+"/"+form.Type+"/"+form.emissionDate+"/"+form.DocumentNumber+"/"+form.Language+"@\u200E"+form.ExpressionDate +"\u200F";
+            expressionDateParts = form.ExpressionDate.split("-");
+            eeDate = convertDates.HStr2G(expressionDateParts[2],expressionDateParts[1],expressionDateParts[0]);
+        
+          }
+          else{
+            alias += form.AKNType+"/"+form.Type+"/"+form.emissionDate+"/"+form.DocumentNumber+"/"+form.Language+"@";
+          }
+          var dateParts = form.emissionDate.split("-");
+          var eDate = convertDates.HStr2G(dateParts[2],dateParts[1],dateParts[0]);
+          if (eeDate != null || eeDate != undefined){
+            uri += form.AKNType+"/" +value+"/"+eDate+"/"+form.DocumentNumber+"/"+form.Language+"@" +eeDate;
+          }
+          else {
+            uri += form.AKNType+"/" +value+"/"+eDate+"/"+form.DocumentNumber+"/"+form.Language+"@";
+          }
+        }
+        //The last false is for if config!
+        const uriObj = new Object();
+        uriObj['uri'] = uri;
+        uriObj['alias'] = alias;
+        uriObj['ifconfig'] = false;
+        uriObj['status'] = 200;
+        console.log('uriObj: ',uriObj);
+        resolve(uriObj);
+      });
+    });
     
-      }
-      else{
-        alias += form.AKNType+"/"+form.Type+"/"+form.emissionDate+"/"+form.DocumentNumber+"/"+form.Language+"@";
-      }
-      var dateParts = form.emissionDate.split("-");
-      var eDate = convertDates.HStr2G(dateParts[2],dateParts[1],dateParts[0]);
-      if (eeDate != null || eeDate != undefined){
-        uri += form.AKNType+"/" +dictionary.getEngTranslation(form.Type)+"/"+eDate+"/"+form.DocumentNumber+"/"+form.Language+"@" +eeDate;
-      }
-      else {
-        uri += form.AKNType+"/" +dictionary.getEngTranslation(form.Type)+"/"+eDate+"/"+form.DocumentNumber+"/"+form.Language+"@";
-      }
-    }
-    console.log("uri: ",uri);
-    //The last false is for if config!
-    const uriObj = new Object();
-    uriObj['uri'] = uri;
-    uriObj['alias'] = alias;
-    uriObj['ifconfig'] = false;
-    uriObj['status'] = 200;
-    return uriObj;
   }
   
 
@@ -112,22 +117,29 @@ const convertDates = require("../others/convertDates");
 
   
   function getUriAndAlias(object){
-    var dateCheck = checkFormData(object);
-    if (dateCheck != 'Success'){
-      const errObj = new Object();
-      errObj['status'] = dateCheck[0];
-      errObj['errorMessege'] = dateCheck[1];
-      return errObj;
-    }  
-    console.log("Check hebrew: ",contains_heb(object.Type));
-    var returnData;
-    if (contains_heb(object.Type) ||  contains_heb(object.emissionDate)){
-      returnData = createHebUri(object);
-    }
-    else {
-      returnData = createEngUri(object);
-    }
-    return returnData;
+    return new Promise((resolve, reject) => {
+      
+      // var returnData = object;
+      var dateCheck = checkFormData(object);
+      if (dateCheck != 'Success'){
+        const errObj = new Object();
+        errObj['status'] = dateCheck[0];
+        errObj['errorMessege'] = dateCheck[1];
+        return errObj;
+      }  
+      // console.log("Check hebrew: ",contains_heb(object.Type));
+      if (contains_heb(object.Type) ||  contains_heb(object.emissionDate)){
+        createHebUri(object).then((retdata)=> {
+          resolve(retdata);
+        });
+      }
+      else {
+        createEngUri(object).then((retdata)=> {
+          resolve(retdata);
+        });
+      }
+    });
+    
   }
 // /** ----------------------------------------------------------------------------------
 //  * Check if the gregorian year,month and day is correct 

@@ -26,10 +26,10 @@ const helpFunc = require("./helpFunctions");
 createUris = async function (req, res, next) {  
     if (!req || !req.body) return res.sendStatus(400); //if the request is empty, return it
     try{
-        // console.log("req.body: ",req.body);
-        const createUris = await createUrisFunc(req.body); 
-        res.status(createUris[0]);
-        res.send(createUris[1]);
+        var data = await createUrisFunc(req.body);
+        console.log(data);
+        res.status(data[0]);
+        res.send(data[1]);
     }
 
     catch(err){
@@ -40,19 +40,29 @@ createUris = async function (req, res, next) {
 module.exports = {createUris}
 
 
-//grab the user from PublicUsers collection
+//Grab the user from PublicUsers collection
 function createUrisFunc(body){
-    //Insert the new Json with the data.
-    const form = body;
-    try{
-        var retArr = [];
-        for (index in form ){
-        //   console.log("form: ",form[index]);
-          retArr.push(helpFunc.getUriAndAlias(form[index]));
+    return new Promise((resolve, reject) => {
+        if (body != null && body != undefined){
+            const form = body;
+            var promises = [];
+            for(index in form)
+            {
+                promises.push(helpFunc.getUriAndAlias(form[index]));
+            }
+            Promise.all(promises)    
+            .then(function(data){ 
+                // console.log("data: ",data);
+                resolve([200,data]);
+                // console.log("res done");
+            })
+            .catch(function(err){ 
+                console.log("ERROR: ",err);
+                reject(err);
+            });
         }
-        console.log("retArr: ",retArr);
-        return([200,retArr]) ;
-    }catch(err){
-        return(err);
-    }
+        else{
+            reject("Error body Empty");
+        }
+    });
 }

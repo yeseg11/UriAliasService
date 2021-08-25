@@ -15,10 +15,14 @@ const heb2greService = require('./heb2greService/heb2greDate');
 const gre2hebPost = require('./gre2HebService/gre2hebPost');
 const gre2hebGet = require('./gre2HebService/gre2hebGet');
 
+//gre2hebDate
+const dictionaryData = require('./dictionaryData/addDataToDic');
+
 const post = {
   createUris,
   createUri,
-  gre2hebPost
+  gre2hebPost,
+  dictionaryData
 };
 
 const get = {

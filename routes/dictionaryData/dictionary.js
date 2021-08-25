@@ -1,59 +1,45 @@
 const fs = require('fs');
 const { getSystemErrorMap } = require('util');
 
-
-
-
-
-
-const hebDictionary = new Map();
-hebDictionary.set('law',"\u200Fחוק\u200E");
-hebDictionary.set('basic_law',"\u200Fחוק_יסוד\u200E");
-hebDictionary.set('StatuteBook',"\u200Fספר_החוקים\u200E");
-hebDictionary.set('LawBook',"\u200Fספר_החוקים\u200E");
-
 function getHebTranslation(word){
-    console.log(hebDictionary.get(word));
-    let utf8decoder = new TextDecoder();
-    return hebDictionary.get(word);
+    return new Promise((resolve, reject) => {
+        fs.readFile('./data/dictionary.json', 'utf8',(err, data) => {
+            // console.log('data data: ',data);
+          if (err) {
+            console.log('data err: ',err);
+            reject(err)  // calling `reject` will cause the promise to fail with or without the error passed as an argument
+            return        // and we don't want to go any further
+          }
+          var myObject= JSON.parse(data);
+          if (myObject[word]){
+            resolve(myObject[word]);
+          }else{
+            reject('Error');
+          }
+        })
+      })
 }
-
 
 function getEngTranslation(word){
-    // var data = fs.readFileSync('../data/dictionary.json');
-    // var myObject= JSON.parse(data);
-    // var newData = JSON.stringify(myObject);
-    // console.log(newData);
-
-
-
-
-    for (let [key, value] of hebDictionary.entries()) {
-        if (value == word){
-            return key;
-        }   
-      }
+    return new Promise((resolve, reject) => {
+        fs.readFile('./data/dictionary.json', 'utf8',(err, data) => {
+            if (err) {
+                console.log('data err: ',err);
+                reject(err)  // calling `reject` will cause the promise to fail with or without the error passed as an argument
+                return        // and we don't want to go any further
+            }
+            var myObject= JSON.parse(data);
+            for (var key in myObject) {
+                var w2 = "\u200F"+word+"\u200E";
+                if (w2 == myObject[key]){
+                    console.log('key',key);
+                    resolve(key);
+                }
+            }
+            // reject('Error: Can not find the English translate');
+        });
+      });
 }
 
-
-function addDataToDic(key,value){
-    //If have the key, update. else push. 
-    var data = fs.readFileSync('../data/dictionary.json');
-    var myObject= JSON.parse(data);
-    if (myObject.get(key)){
-        myObject[key] = value;
-    }
-    else{
-        let newData = {
-            key: value
-        }  
-        myObject.push(newData);
-    }
-    fs.writeFile('data.json', newData, err => {
-        // error checking
-        if(err) throw err;   
-        console.log("New data added");
-    });
-}
 
 module.exports = { getHebTranslation,getEngTranslation };

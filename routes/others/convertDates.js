@@ -475,7 +475,6 @@ function HStr2G(sYearH, sMonthH, sDateH) {
   var year = gematriya.gematriya(sYearH, {order: true});
   var month = monthHMap.get(sMonthH);
   var day = dayHMap.get(sDateH);
-  // console.log("HERE1: ",year, month, day)
   var strRes = FormatDate(HebToGreg(year, month, day));
   return strRes;
 }

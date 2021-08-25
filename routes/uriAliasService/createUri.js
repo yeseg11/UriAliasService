@@ -40,7 +40,7 @@ module.exports = {createUri}
 
 
 //grab the user from PublicUsers collection
-function createUriFunc(body){
+async function createUriFunc(body){
     //Insert the new Json with the data.
     const form = body;
     console.log("form: ",form);
