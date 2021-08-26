@@ -38,6 +38,7 @@ app.get('/heb2greDate/:hDate', routes.get.heb2greService.heb2greDate);
 
 // Dictionary
 app.post('/addToDictionary', routes.post.dictionaryData.addDataToDic);
+app.get('/allDictionary', routes.get.allDictionary.showDictionary);
 
 
 // catch 404 and forward to error handler

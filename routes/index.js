@@ -15,8 +15,9 @@ const heb2greService = require('./heb2greService/heb2greDate');
 const gre2hebPost = require('./gre2HebService/gre2hebPost');
 const gre2hebGet = require('./gre2HebService/gre2hebGet');
 
-//gre2hebDate
+//Dictionary
 const dictionaryData = require('./dictionaryData/addDataToDic');
+const allDictionary = require('./dictionaryData/showAllDic');
 
 const post = {
   createUris,
@@ -27,7 +28,8 @@ const post = {
 
 const get = {
   gre2hebGet,
-  heb2greService
+  heb2greService,
+  allDictionary
 };
 
 module.exports = {

@@ -25,7 +25,7 @@ const { getSystemErrorMap } = require('util');
         var data = await addDTD(form);
         // console.log(data);
         // res.status(data[0]);
-        // res.send(data[1]);
+        res.send(data);
     }
 
     catch(err){
