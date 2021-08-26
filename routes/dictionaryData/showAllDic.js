@@ -9,10 +9,9 @@ const { getSystemErrorMap } = require('util');
  * @RESPONSE [{key:value},{key:value},....]
  ----------------------------------------------------------------------------------*/
 
-showDictionary = async function (req, res, next) {  
+getAllDictionary = async function (req, res, next) {  
     try{
-        var data = await readJson(form);
-        console.log(data);
+        var data = await readJson();
         res.send(data);
     }
 
@@ -20,14 +19,13 @@ showDictionary = async function (req, res, next) {
         next(err);
     }
 }
+module.exports = {getAllDictionary};
 
-module.exports = {showDictionary};
 
 function readJson(){        
     return new Promise((resolve, reject) => {
         var data = fs.readFileSync('./data/dictionary.json');
         var myObject= JSON.parse(data);
-        console.log("myObject",myObject);
         resolve(myObject);
     });
 }
