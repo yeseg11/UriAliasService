@@ -105,7 +105,7 @@ const convertDates = require("../others/convertDates");
         uriObj['alias'] = alias;
         uriObj['ifconfig'] = false;
         uriObj['status'] = 200;
-        console.log('uriObj: ',uriObj);
+        // console.log('uriObj: ',uriObj);
         resolve(uriObj);
       });
     });

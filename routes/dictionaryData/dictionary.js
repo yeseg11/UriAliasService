@@ -1,3 +1,4 @@
+const { Console } = require('console');
 const fs = require('fs');
 const { getSystemErrorMap } = require('util');
 
@@ -30,13 +31,12 @@ function getEngTranslation(word){
             }
             var myObject= JSON.parse(data);
             for (var key in myObject) {
-                var w2 = "\u200F"+word+"\u200E";
-                if (w2 == myObject[key]){
+                if (word == myObject[key]){
                     console.log('key',key);
                     resolve(key);
                 }
             }
-            // reject('Error: Can not find the English translate');
+            reject('Error: Can not find the English translate');
         });
       });
 }

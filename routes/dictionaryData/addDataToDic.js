@@ -64,7 +64,7 @@ function addDTD(form){
         return new Promise((resolve, reject) => {
             var data = fs.readFileSync('./data/dictionary.json');
             var myObject= JSON.parse(data);
-            myObject[key] = value;
+            myObject[key] = "\u200F"+value+"\u200E";
             let newData = JSON.stringify(myObject);
             fs.writeFile('./data/dictionary.json', newData, err => {
                 // error checking
