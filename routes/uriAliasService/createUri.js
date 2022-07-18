@@ -1,3 +1,4 @@
+const { resolve } = require('path');
 const path = require('path');
 const dictionary = require("../dictionaryData/dictionary");
 const convertDates = require("../others/convertDates");
@@ -26,9 +27,13 @@ const helpFunc = require("./helpFunctions");
 createUri = async function (req, res, next) {  
     if (!req || !req.body) return res.sendStatus(400); //if the request is empty, return it
     try{
-        console.log("req.body: ",req.body);
         const createUris = await createUriFunc(req.body); 
-        res.status(createUris[0]);
+        console.log("createUris: ",createUris);
+        var data = createUris[0];
+        if (data == null){
+           data = {error:"error"}
+        }
+        res.status(data);
         res.send(createUris[1]);
     }
     catch(err){
@@ -43,19 +48,20 @@ module.exports = {createUri}
 async function createUriFunc(body){
     //Insert the new Json with the data.
     const form = body;
-    console.log("form: ",form);
     try{
-        var dateCheck = helpFunc.checkFormDate(form);
+        var dateCheck = helpFunc.checkFormData(form);
+        var dateCheck = 'Success';
         if (dateCheck != 'Success'){
             return(dateCheck[0],dateCheck[1]);
         }  
         var returnData;
         if (helpFunc.contains_heb(form.Type) ||  helpFunc.contains_heb(form.emissionDate)){
-            returnData = helpFunc.createHebUri(form);
+            returnData = await helpFunc.createHebUri(form);
         }
         else {
-            returnData = helpFunc.createEngUri(form);
+            returnData = await helpFunc.createEngUri(form);
         }
+       
         return([200,returnData]) ;
     }catch(err){
         return(err);

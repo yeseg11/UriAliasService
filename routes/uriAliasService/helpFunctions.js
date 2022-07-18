@@ -78,6 +78,8 @@ const convertDates = require("../others/convertDates");
         if (form.Language == undefined || form.Language == "" || form.Language.length < 3){
           alias += form.AKNType+"/"+form.Type+"/"+form.emissionDate+"/"+form.DocumentNumber
           uri += form.AKNType+"/" +value+"/"+eDate+"/"+form.DocumentNumber
+
+          
         }
         //Create Expression
         else{
@@ -105,9 +107,9 @@ const convertDates = require("../others/convertDates");
         uriObj['alias'] = alias;
         uriObj['ifconfig'] = false;
         uriObj['status'] = 200;
-        // console.log('uriObj: ',uriObj);
         resolve(uriObj);
       });
+      // reject("Error on create uri");
     });
     
   }

@@ -1,0 +1,52 @@
+apiVersion: apps/v1.0
+kind: Deployment
+metadata:
+  name: existdb
+  labels:
+    app: existdb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: existdb
+  template:
+    metadata:
+      labels:
+        app: existdb
+    spec:
+      containers:
+      - name: existdbcontainer
+        image: wikiconversionacr.azurecr.io/existimagebase11
+        command: ["/usr/local/eXist-db/bin/startup.sh"]
+        resources:
+          requests:
+            cpu: 100m
+            memory: 1Gi
+          limits:
+            cpu: 250m
+            memory: 2Gi
+        ports:
+        - containerPort: 8080 
+        volumeMounts:
+        - name: azurefile
+          mountPath: /home/files
+      imagePullSecrets:
+      - name: existdb-secret
+      volumes:
+      - name: azurefile
+        azureFile:
+          secretName: existdb-secret
+          shareName: akndata
+          readOnly: false
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: existdbservice
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 8080
+    targetPort: 8080
+  selector:
+    app: existdb

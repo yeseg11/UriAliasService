@@ -13,7 +13,7 @@ function getHebTranslation(word){
           }
           var myObject= JSON.parse(data);
           if (myObject[word]){
-            resolve(myObject[word]);
+            resolve('‏'+myObject[word]+'‎');
           }else{
             reject('Error');
           }
